@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Stock Portfolio Tracker</title>
+</head>
+
+<body>
+
+    <h1>📈 Stock Portfolio Tracker</h1>
+
+    <p>Track your investments and calculate their total value.</p>
+
+    <hr>
+
+    <h2>Add Your Stock</h2>
+
+    <label>Stock Name:</label>
+    <input type="text" id="stockName" placeholder="Example: AAPL">
+
+    <br><br>
+
+    <label>Quantity:</label>
+    <input type="number" id="quantity" placeholder="Example: 5">
+
+    <br><br>
+
+    <button onclick="addStock()">ADD STOCK</button>
+
+    <h2>Your Portfolio</h2>
+
+    <div id="portfolio"></div>
+
+    <h2>Total Investment: ₹<span id="total">0</span></h2>
+
+
+    <script>
+
+        // Stock prices from Python
+        const stockPrices = {{ stock_prices | tojson }};
+
+        let totalInvestment = 0;
+
+        function addStock() {
+
+            let name = document.getElementById("stockName").value.toUpperCase();
+            let quantity = Number(document.getElementById("quantity").value);
+
+            if (name === "" || quantity <= 0) {
+                alert("Please enter a valid stock name and quantity.");
+                return;
+            }
+
+            if (!(name in stockPrices)) {
+                alert("Stock not available. Try AAPL, TSLA, GOOGL, MSFT or AMZN.");
+                return;
+            }
+
+            let price = stockPrices[name];
+
+            let investment = price * quantity;
+
+            totalInvestment = totalInvestment + investment;
+
+            let portfolio = document.getElementById("portfolio");
+
+            let stock = document.createElement("p");
+
+            stock.innerHTML =
+                "📊 " + name +
+                " | Quantity: " + quantity +
+                " | Price: ₹" + price +
+                " | Value: ₹" + investment;
+
+            portfolio.appendChild(stock);
+
+            document.getElementById("total").innerText = totalInvestment;
+
+            document.getElementById("stockName").value = "";
+            document.getElementById("quantity").value = "";
+        }
+
+    </script>
+
+</body>
+</html>
+
+
+
+
+
